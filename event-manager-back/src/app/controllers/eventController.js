@@ -1,0 +1,48 @@
+const express = require("express");
+
+const Event = require('../models/Event');
+
+const router = express.Router();
+
+// Creating new event
+router.post('/', async (req, res) => {
+  try {
+    const event = await Event.create(req.body);
+    return res.status(200).send({ event })
+  } catch(err) {
+    return res.status(400).send({ 'error': err });
+  }
+});
+
+// Get event by id
+router.get('/:id', async (req, res) => {
+  var id = req.params.id;
+
+  try {
+    return res.status(200).send({ 'ok': 'ok' });
+  } catch(err) {
+    return res.status(400).send({ 'error': err });
+  }
+});
+
+// List events
+router.get('/', async (req, res) => {
+  try {
+    return res.status(200).send({ 'ok': 'ok' });
+  } catch(err) {
+    return res.status(400).send({ 'error': err });
+  }
+});
+
+// Delete event by id
+router.delete('/:id', async (req, res) => {
+  var id = req.params.id;
+
+  try {
+    return res.status(200).send({ 'ok': 'ok' });
+  } catch(err) {
+    return res.status(400).send({ 'error': err });
+  }
+});
+
+module.exports = app => app.use("/event", router);
