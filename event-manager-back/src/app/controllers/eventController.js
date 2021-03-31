@@ -19,7 +19,8 @@ router.get('/:id', async (req, res) => {
   var id = req.params.id;
 
   try {
-    return res.status(200).send({ 'ok': 'ok' });
+    var event = await Event.findById(id);
+    return res.status(200).send(event);
   } catch(err) {
     return res.status(400).send({ 'error': err });
   }
