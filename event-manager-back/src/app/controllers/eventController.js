@@ -1,21 +1,23 @@
 const express = require("express");
 
 const Event = require('../models/Event');
-
+const authMiddleware = require("../middleware/auth");
 const router = express.Router();
 
+router.use(authMiddleware);
+
 // Creating new event
-router.post('/', async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
   try {
-    const event = await Event.create(req.body);
-    return res.status(200).send({ event })
+    const event = await Event.create({ ...req.body, eventOwner: req.userId });
+    return res.status(200).send(event)
   } catch(err) {
     return res.status(400).send({ 'error': err });
   }
 });
 
 // Get event by id
-router.get('/:id', async (req, res) => {
+router.get('/:id', authMiddleware, async (req, res) => {
   var id = req.params.id;
 
   try {
@@ -27,16 +29,17 @@ router.get('/:id', async (req, res) => {
 });
 
 // List events
-router.get('/', async (req, res) => {
+router.get('/', authMiddleware, async (req, res) => {
   try {
-    return res.status(200).send({ 'ok': 'ok' });
+    var events = await Event.find();
+    return res.status(200).send( events );
   } catch(err) {
     return res.status(400).send({ 'error': err });
   }
 });
 
 // Delete event by id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authMiddleware, async (req, res) => {
   var id = req.params.id;
 
   try {

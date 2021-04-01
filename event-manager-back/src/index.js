@@ -10,6 +10,7 @@ require('dotenv').config()
 app.use(express.json());
 
 require('./app/controllers/authController')(app);
+require('./app/controllers/userController')(app);
 require('./app/controllers/eventController')(app);
 
 app.listen(port, () => console.log(`Server running at http://localhost:${port}/`));
