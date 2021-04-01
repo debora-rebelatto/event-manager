@@ -21,6 +21,9 @@ router.get('/:id', authMiddleware, async (req, res) => {
   var id = req.params.id;
 
   try {
+    if(!await Event.findById(id))
+      res.status(400).send({ 'error': 'Evento não existe' });
+
     var event = await Event.findById(id);
     return res.status(200).send(event);
   } catch(err) {
@@ -43,7 +46,11 @@ router.delete('/:id', authMiddleware, async (req, res) => {
   var id = req.params.id;
 
   try {
-    return res.status(200).send({ 'ok': 'ok' });
+    if(!await Event.findById(id))
+      return res.status(400).send({ 'error': 'Evento não existe' })
+
+    await Event.deleteOne({ _id: id })
+    return res.status(200).send({ "ok": "Evento deletado" });
   } catch(err) {
     return res.status(400).send({ 'error': err });
   }
