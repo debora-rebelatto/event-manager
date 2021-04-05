@@ -61,14 +61,15 @@ router.post('/update/:id', async(req, res) => {
   let id = req.params.id;
   let { title, description, date, location } = req.body;
   try {
-    await Event.findById(id).then(event => {
-      event.title = title;
-      event.description = description;
-      event.date = Date.parse(date);
-      event.location = location;
-      //Save the event
-      event.save()
-    })
+    const updateDoc = {
+      $set: {
+        description: description,
+        title: title,
+        date: date,
+        location: location
+      },
+    };
+    await Event.updateOne({ _id: id }, updateDoc, { multi: false, omitUndefined: true });
     return res.status(200).send({'ok': 'Evento editado'});
   } catch(err) {
     //console.log(err)
