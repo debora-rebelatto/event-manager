@@ -1,4 +1,4 @@
-const mongoose = require('../../database/database')
+const mongoose = require('../../database/database');
 
 const EventSchema = mongoose.Schema({
   title: {
@@ -16,10 +16,13 @@ const EventSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  eventOwner: {
+  organizer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
+  },
+  value: {
+    type: Number
   },
   participants: [{
     type: mongoose.Schema.Types.ObjectId,

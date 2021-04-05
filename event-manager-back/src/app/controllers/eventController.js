@@ -9,7 +9,7 @@ router.use(authMiddleware);
 // Creating new event
 router.post('/', authMiddleware, async (req, res) => {
   try {
-    const event = await Event.create({ ...req.body, eventOwner: req.userId });
+    const event = await Event.create({ ...req.body, organizer: req.userId });
     return res.status(200).send(event)
   } catch(err) {
     return res.status(400).send({ 'error': err });
@@ -24,7 +24,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
     if(!await Event.findById(id))
       res.status(400).send({ 'error': 'Evento não existe' });
 
-    var event = await Event.findById(id);
+    var event = await (await Event.findById(id)).populate('organizer');
     return res.status(200).send(event);
   } catch(err) {
     return res.status(400).send({ 'error': err });
@@ -34,7 +34,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
 // List events
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    var events = await Event.find();
+    var events = await Event.find().populate('organizer');
     return res.status(200).send( events );
   } catch(err) {
     return res.status(400).send({ 'error': err });
