@@ -1,7 +1,7 @@
 <template>
-<div>
-  <generic-button>BOTÃO INICIAL</generic-button>
-</div>
+  <div>
+    <generic-button>BOTÃO INICIAL</generic-button>  
+  </div>
 </template>
 
 <script>

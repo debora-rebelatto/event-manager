@@ -14,7 +14,7 @@ export default {
 
   html body {
     height: 100vh;
-    background-color: #d9dcf0;
+    background-color: #fcfcfc;
   }
 
   * {
