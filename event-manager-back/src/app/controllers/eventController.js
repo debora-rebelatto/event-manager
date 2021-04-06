@@ -11,10 +11,8 @@ router.use(authMiddleware);
 router.post('/', authMiddleware, async (req, res) => {
   try {
     var event = await Event.create({ ...req.body, organizer: req.userId });
-
     return res.status(200).send(event)
   } catch(err) {
-    console.log(err)
     return res.status(400).send({ 'error': err });
   }
 });
@@ -40,7 +38,6 @@ router.get('/', authMiddleware, async (req, res) => {
     var events = await Event.find().populate(['organizer', 'participants']);
     return res.status(200).send( events );
   } catch(err) {
-    console.log(err)
     return res.status(400).send({ 'error': err });
   }
 });
@@ -76,30 +73,9 @@ router.post('/update/:id', authMiddleware, async(req, res) => {
     await Event.updateOne({ _id: id }, updateDoc, { multi: false, omitUndefined: true });
     return res.status(200).send({'ok': 'Evento editado'});
   } catch(err) {
-    //console.log(err)
     return res.status(400).send({ 'error': err });
   }
 });
 
-// Edit event by id
-router.post('/newParticipant', authMiddleware, async(req, res) => {
-  let id = req.params.id;
-  let { title, description, date, location } = req.body;
-  try {
-    const updateDoc = {
-      $set: {
-        description: description,
-        title: title,
-        date: date,
-        location: location
-      },
-    };
-    await Event.updateOne({ _id: id }, updateDoc, { multi: false, omitUndefined: true });
-    return res.status(200).send({'ok': 'Evento editado'});
-  } catch(err) {
-    //console.log(err)
-    return res.status(400).send({ 'error': err });
-  }
-});
 
 module.exports = app => app.use("/event", router);
