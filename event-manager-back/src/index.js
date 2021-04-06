@@ -12,7 +12,9 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 require('./app/controllers/authController')(app);
-require('./app/controllers/userController')(app);
 require('./app/controllers/eventController')(app);
+require('./app/controllers/participantController')(app);
+require('./app/controllers/userController')(app);
+
 
 app.listen(port, () => console.log(`Server running at http://localhost:${port}/`));

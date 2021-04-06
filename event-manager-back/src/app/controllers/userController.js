@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
+// List Users
 router.get('/', authMiddleware, async(req, res) => {
   try {
     var users = await User.find();
@@ -16,15 +17,24 @@ router.get('/', authMiddleware, async(req, res) => {
   }
 });
 
+// Get logged User info
+router.get('/info', authMiddleware, async(req, res) => {
+  try {
+    var user = await User.findById(req.userId);
+    return res.status(200).send( user );
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
 // Get User by ID
 router.get('/:id', authMiddleware, async(req, res) => {
   var id = req.params.id;
-
   try {
     var user = await User.findById(id);
     return res.status(200).send( user );
   } catch (err) {
-    res.status(400).send({"error": err});
+    res.status(400).send(err);
   }
 });
 

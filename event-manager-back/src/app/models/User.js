@@ -17,6 +17,14 @@ const UserSchema = mongoose.Schema({
     required: true,
     select: false
   },
+  eventsParticipated: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Participant',
+  }],
+  eventsOrganized: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Organizer',
+  }],
   createdAt: {
     type: Date,
     default: Date.now

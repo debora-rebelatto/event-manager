@@ -26,7 +26,7 @@ const EventSchema = mongoose.Schema({
   },
   participants: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Participant',
   }],
   createdAt: {
     type: Date,
