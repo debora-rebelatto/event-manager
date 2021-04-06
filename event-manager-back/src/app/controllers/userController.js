@@ -1,6 +1,8 @@
 const express = require("express");
 
 const User = require('../models/User');
+const Event = require('../models/Event');
+
 const authMiddleware = require("../middleware/auth");
 
 const router = express.Router();
@@ -27,6 +29,17 @@ router.get('/info', authMiddleware, async(req, res) => {
   }
 });
 
+// Get events user is organizing
+router.get('/organizer', authMiddleware, async(req, res) => {
+  try {
+    var event = await Event.find({organizer:req.userId});
+    return res.status(200).send( event );
+  } catch (err) {
+    console.log(err)
+    res.status(400).send(err);
+  }
+});
+
 // Get User by ID
 router.get('/:id', authMiddleware, async(req, res) => {
   var id = req.params.id;
@@ -37,6 +50,5 @@ router.get('/:id', authMiddleware, async(req, res) => {
     res.status(400).send(err);
   }
 });
-
 
 module.exports = app => app.use("/user", router);
