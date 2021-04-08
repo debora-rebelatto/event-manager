@@ -9,6 +9,7 @@ require('dotenv').config();
 const port = 3000;
 
 app.use(morgan('dev'));
+app.use(cors());
 app.use(express.json());
 
 require('./app/controllers/authController')(app);
