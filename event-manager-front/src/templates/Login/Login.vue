@@ -2,26 +2,84 @@
   <div class="container">
     
     <div class="form">
-        <el-input placeholder="Digite seu nome" v-model="input"  class="input-form"></el-input>
-        <el-input placeholder="Digite seu Email" v-model="input"  class="input-form"></el-input>
-        <el-input placeholder="Digite sua Senha" v-model="input"  class="input-form"></el-input>
-       
-        <el-button type="primary" class="buttom-form" style="color: #6DF1A4">Cadastrar</el-button>
-        <el-button type="secundary" class="buttom-form" >Logar</el-button>
+        <generic-input 
+            placeholder="Digite seu nome"  
+            v-model="formLogin.user" 
+            class="input-form"
+        />
 
+        <generic-input 
+            placeholder="Digite seu Email" 
+            v-model="formLogin.email" 
+            class="input-form"
+        />
+
+        <generic-input 
+            placeholder="Digite sua Senha" 
+            v-model="formLogin.senha" 
+            class="input-form"
+        />
+
+        <el-button 
+            type="primary" 
+            class="buttom-form" 
+            style="color: #6DF1A4" 
+            @click.native="logar()">
+            Cadastrar
+        </el-button>
+       
+        <el-button
+            type="secundary" 
+            class="buttom-form" 
+            @click.native="logar()">
+            Logar
+        </el-button>
     </div>
   </div>
 </template>
 
 <script>
-//import GenericButton from '@/components/atoms/GenericButton'
+import GenericButton from '@/components/atoms/GenericButton/GenericButton.vue'
+import GenericInput from '@/components/atoms/GenericInput/GenericInput.vue'
+
 
 export default {
-    
+    components: {
+        'generic-button': GenericButton,
+        'generic-input': GenericInput
+
+    },
+
+    data(){
+
+        return{
+            formLogin: {
+                user: '',
+                email: '',
+                senha: ''
+            }
+        }
+    },
+
+    methods: {
+        logar(){
+            let loginMessage = this.$message.loading({
+                message: 'Carregando',
+                hasMask: true,
+                duration: '2000',
+                position: "center"
+            });
+            
+            setTimeout(() => {
+                loginMessage.close();
+                this.$router.push("/dashboard");  
+            }, 2000)
+        }
+    }
 }
 </script>
 
-<style>
+<style lang="css" scoped>
 
 .container{
     background-image: url("../../assets/images/back.png");

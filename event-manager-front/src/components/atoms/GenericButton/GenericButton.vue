@@ -1,14 +1,10 @@
 <template>
   <div>
-        <b-button
-            :id='id'
-            :value='value'
-            :disabled='disabled'
-            @click='click($event)'
-        >
+    <el-button 
+        :type="secundary" 
+        class="buttom-form"> 
         <slot/>
-        </b-button>
-
+    </el-button>
   </div>
 </template>
 

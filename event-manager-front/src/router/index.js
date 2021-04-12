@@ -10,12 +10,20 @@ export default new Router({
     {
       path: '/',
       name: 'Login',
-      component: Login
+      component: Login,
+      beforeEnter: (to, from, next) => {
+        document.title = `${to.name}`
+        next();
+      }
     },
     {
       path: '/dashboard',
       name: 'Dashboard',
-      component: Dashboard
+      component: Dashboard,
+      beforeEnter: (to, from, next) => {
+        document.title = `${to.name}`
+        next();
+      }
     }
   ]
 })

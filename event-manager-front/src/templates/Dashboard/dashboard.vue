@@ -1,20 +1,32 @@
 <template>
-  <div>
-    <generic-button>BOTÃO INICIAL</generic-button>  
+  <div class="container">
+      <div class="sidebar">
+        <sideBar />
+      </div>
   </div>
 </template>
 
 <script>
 import GenericButton from '@/components/atoms/GenericButton'
+import sideBar from '@/components/molecules/sideBar'
 
 export default {
     components: {
-        "generic-button": GenericButton
+      "generic-button": GenericButton,
+      "sideBar":  sideBar
     }
 
 }
 </script>
 
-<style>
+<style lang="css" scoped>
+
+</style>>
+.container {
+  display: flex;
+
+}
+
+.sidebar{}
 
 </style>
