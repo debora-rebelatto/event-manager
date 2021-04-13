@@ -70,7 +70,7 @@ router.post('/organizerPermission/:id', authMiddleware, async(req, res) => {
     const updateDoc = { $set: { isOrganizer: true } };
     await User.updateOne({ _id: id }, updateDoc, { multi: false, omitUndefined: true });
 
-    return res.status(200).send( user );
+    return res.status(200);
   } catch (err) {
     res.status(400).send(err);
   }
