@@ -17,6 +17,12 @@ const UserSchema = mongoose.Schema({
     required: true,
     select: false
   },
+  isOrganizer: {
+    type: Boolean,
+  },
+  college: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now
