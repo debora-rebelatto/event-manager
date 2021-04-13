@@ -63,7 +63,7 @@ router.get('/:id', authMiddleware, async(req, res) => {
 });
 
 // Give user permission to be organizer
-router.post('/organierPermission/:id', authMiddleware, async(req, res) => {
+router.post('/organizerPermission/:id', authMiddleware, async(req, res) => {
   var id = req.params.id;
 
   try {
