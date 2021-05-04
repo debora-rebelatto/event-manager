@@ -8,22 +8,46 @@ const EventSchema = mongoose.Schema({
   description: {
     type: String,
   },
-  date: {
-    type: Date,
-    required: true,
+  city: {
+    type: String,
+    required: true
+  },
+  state: {
+    type: String,
+    required: true
   },
   location: {
     type: String,
     required: true
+  },
+  beginDate: {
+    type: Date,
+    required: true,
+  },
+  finishDate: {
+    type: Date,
+    required: true,
   },
   organizer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
-  value: {
-    type: Number
+  quantityTickets: {
+    type: Number,
+    require: true,
   },
+  isFree: {
+    type: Boolean,
+    required: true
+  },
+  price: {
+    type: Number,
+  },
+  ticket: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Ticket',
+  }],
   participants: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Participant',

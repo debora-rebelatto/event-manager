@@ -10,9 +10,13 @@ router.use(authMiddleware);
 
 // Creating new event
 router.post('/', authMiddleware, async (req, res) => {
+  let { isFree, price } = req.body;
   try {
     var user = await User.findById(req.userId);
-    if(!user.isOrganizer) return res.status(400).send({ error: 'usuário não autorizado' })
+
+    if(!isFree && !price) return res.status(400).json({ "error": "Evento precisa ter preço" })
+
+    if(!user.isOrganizer) return res.status(400).send({ error: 'Usuário não autorizado' })
 
     var event = await Event.create({ ...req.body, organizer: req.userId });
     return res.status(200).send(event)
@@ -29,7 +33,8 @@ router.get('/:id', authMiddleware, async (req, res) => {
     if(!await Event.findById(id))
       res.status(400).send({ 'error': 'Evento não existe' });
 
-    var event = await Event.findById(id).populate('organizer');
+    var event = await Event.findById(id).populate(['organizer', 'participants']);
+
     return res.status(200).send(event);
   } catch(err) {
     return res.status(400).send({ 'error': err });
@@ -40,6 +45,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
 router.get('/', authMiddleware, async (req, res) => {
   try {
     var events = await Event.find().populate(['organizer', 'participants']);
+
     return res.status(200).send( events );
   } catch(err) {
     return res.status(400).send({ 'error': err });
@@ -98,6 +104,5 @@ router.put('/:id', authMiddleware, async(req, res) => {
     return res.status(400).send({ 'error': err });
   }
 });
-
 
 module.exports = app => app.use("/event", router);
