@@ -8,6 +8,21 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
+//Query filter
+router.get('/filter', authMiddleware, async(req, res) => {
+  try {
+    var events = await Event.find({
+      title: req.body.title,
+      value: { $gte: req.body.value },
+      date: req.body.date,
+      location: req.body.location
+    });
+    return res.status(200).send( events );
+  } catch(err) {
+    return res.status(400).send({ 'error': err });
+  }
+});
+
 // Creating new event
 router.post('/', authMiddleware, async (req, res) => {
   let { isFree, price } = req.body;
