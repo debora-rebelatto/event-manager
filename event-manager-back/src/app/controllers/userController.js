@@ -2,6 +2,7 @@ const express = require("express");
 
 const User = require('../models/User');
 const Event = require('../models/Event');
+const Participant = require("../models/Participant");
 
 const authMiddleware = require("../middleware/auth");
 
@@ -32,7 +33,7 @@ router.get('/info', authMiddleware, async(req, res) => {
 // Get events user is participating
 router.get('/participant', authMiddleware, async(req, res) => {
   try {
-    var event = await Event.find({participant: req.userId});
+    var event = await Participant.find({participant: req.userId});
     return res.status(200).send( event );
   } catch (err) {
     console.log(err)
