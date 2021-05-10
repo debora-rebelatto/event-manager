@@ -19,7 +19,7 @@
           <span>Universidade Federal da Fronteira Sul</span>
         </el-menu-item>
          <el-menu-item index="2">
-          <i class="el-icon-time"></i>
+          <i class="el-icon-time"> </i>
           <span>Semestre</span>
         </el-menu-item>
         <el-menu-item>
