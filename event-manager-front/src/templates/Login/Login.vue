@@ -24,7 +24,7 @@
             type="primary" 
             class="buttom-form" 
             style="color: #6DF1A4" 
-            @click.native="logar()">
+            @click.native="cadastrar()">
             Cadastrar
         </el-button>
        
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { actions } from 'vuex'
 import GenericButton from '@/components/atoms/GenericButton/GenericButton.vue'
 import GenericInput from '@/components/atoms/GenericInput/GenericInput.vue'
 
@@ -62,7 +63,13 @@ export default {
     },
 
     methods: {
+        ...mapActions({
+            login: 'login/getLogin',
+            register: 'login/register'
+        }),
+
         logar(){
+            
             let loginMessage = this.$message.loading({
                 message: 'Carregando',
                 hasMask: true,
@@ -70,10 +77,45 @@ export default {
                 position: "center"
             });
             
-            setTimeout(() => {
-                loginMessage.close();
-                this.$router.push("/dashboard");  
-            }, 2000)
+            
+            this.login(this.formLogin)
+            .then(res => {
+                Promise.resolve(res)
+                setTimeout(() => {
+                    loginMessage.close();
+                    this.$router.push("/dashboard");  
+                }, 2000)            
+            })
+            .catch(err => {
+                Promise.reject(err)
+                alert('ERRROOO')
+            })
+            
+        },
+
+        cadastrar(){
+            
+            let loginMessage = this.$message.loading({
+                message: 'Usuario Cadastrado com Sucesso!',
+                hasMask: true,
+                duration: '2000',
+                position: "center"
+            });
+            
+            
+            this.register(this.formLogin)
+            .then(res => {
+                Promise.resolve(res)
+                setTimeout(() => {
+                    loginMessage.close();
+                    this.$router.push("/dashboard");  
+                }, 2000)            
+            })
+            .catch(err => {
+                Promise.reject(err)
+                alert('ERRROOO')
+            })
+            
         }
     }
 }
@@ -101,12 +143,11 @@ export default {
     flex-flow: row wrap;
     justify-content: center;
     background-color: #5769F4;
-    width: 40%;
+    width: 30%;
     height: 100%;
 }
 
-.input-form{
-    display: flex;    
+.input-form{    
     width: 80%;
 }
 

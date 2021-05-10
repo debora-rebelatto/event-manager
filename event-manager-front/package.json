@@ -10,13 +10,15 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "babel": "^6.23.0",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "element-ui": "^2.15.1",
     "vue": "^2.6.12",
     "vue-m-message": "^3.1.0",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

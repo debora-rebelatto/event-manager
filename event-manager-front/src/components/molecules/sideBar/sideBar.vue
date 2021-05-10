@@ -57,6 +57,6 @@ export default {
 .sidebar {
   display: flex;
   flex-direction: column;
-  height: 578px;
+  height: 100vh;
 }
 </style>
