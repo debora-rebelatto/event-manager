@@ -15,12 +15,18 @@
           ></el-avatar>
         </el-menu-item>
         <el-menu-item index="2">
-          <i class="el-icon-house"></i>
-          <span>UFFS</span>
+          <i class="el-icon-school"></i>
+          <span>Universidade Federal da Fronteira Sul</span>
+        </el-menu-item>
+         <el-menu-item index="2">
+          <i class="el-icon-time"></i>
+          <span>Semestre</span>
+        </el-menu-item>
+        <el-menu-item>
+          <calendar title-position="left" />
         </el-menu-item>
         <el-menu-item index="4">
-          <i class="el-icon-plus"></i>
-          <el-button type="text" @click="dialogTableVisible = true">Cadastrar Evento</el-button>
+          <el-button type="primary" @click="dialogTableVisible = true">Cadastrar Evento</el-button>
         </el-menu-item>
       </el-menu>
     </el-col>
@@ -37,6 +43,7 @@
 <script>
 import GenericInput from '@/components/atoms/GenericInput/GenericInput.vue'
 import GenericDate from '@/components/atoms/GenericDate/GenericDate.vue'
+
 export default {
     name: "sidebar",
 
@@ -47,7 +54,7 @@ export default {
 
     data () {
         return{
-            dialogTableVisible: false
+          dialogTableVisible: false
         }
     }
 };
@@ -57,6 +64,8 @@ export default {
 .sidebar {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 578px;
+  text-align: center;
+  word-break: break-work;
 }
 </style>
