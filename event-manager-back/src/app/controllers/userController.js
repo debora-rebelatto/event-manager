@@ -1,37 +1,29 @@
-const express = require("express");
-
 const User = require('../models/User');
 const Event = require('../models/Event');
 const Participant = require("../models/Participant");
 
-const authMiddleware = require("../middleware/auth");
-
-const router = express.Router();
-
-router.use(authMiddleware);
-
 // List Users
-router.get('/', authMiddleware, async(req, res) => {
+exports.listUsers = async function (req, res, next) {
   try {
     var users = await User.find();
     return res.status(200).send(users);
   } catch(err) {
     res.status(400).send({"error": err});
   }
-});
+};
 
 // Get logged User info
-router.get('/info', authMiddleware, async(req, res) => {
+exports.getUserInfo = async function (req, res, next) {
   try {
     var user = await User.findById(req.userId);
     return res.status(200).send( user );
   } catch (err) {
     res.status(400).send(err);
   }
-});
+};
 
 // Get events user is participating
-router.get('/participant', authMiddleware, async(req, res) => {
+exports.eventsPartcipating = async function (req, res, next) {
   try {
     var event = await Participant.find({participant: req.userId});
     return res.status(200).send( event );
@@ -39,10 +31,10 @@ router.get('/participant', authMiddleware, async(req, res) => {
     console.log(err)
     res.status(400).send(err);
   }
-});
+};
 
 // Get events user is organizing
-router.get('/organizer', authMiddleware, async(req, res) => {
+exports.eventsOrganizing = async function (req, res, next) {
   try {
     var event = await Event.find({ organizer:req.userId });
     return res.status(200).send( event );
@@ -50,10 +42,10 @@ router.get('/organizer', authMiddleware, async(req, res) => {
     console.log(err)
     res.status(400).send(err);
   }
-});
+};
 
 // Get User by ID
-router.get('/:id', authMiddleware, async(req, res) => {
+exports.getById = async function (req, res, next) {
   var id = req.params.id;
   try {
     var user = await User.findById(id);
@@ -61,33 +53,34 @@ router.get('/:id', authMiddleware, async(req, res) => {
   } catch (err) {
     res.status(400).send(err);
   }
-});
+};
 
 // Give user permission to be organizer
-router.post('/organizerPermission/:id', authMiddleware, async(req, res) => {
+exports.giveOrganizerPermission = async function (req, res, next) {
   var id = req.params.id;
 
   try {
     const updateDoc = { $set: { isOrganizer: true } };
-    await User.updateOne({ _id: id }, updateDoc, { multi: false, omitUndefined: true });
 
-    return res.status(200).send({ 'ok': "ok" });
+    var user = await User.updateOne({ _id: id }, updateDoc, { multi: false, omitUndefined: true });
+
+    return res.status(200).json(user);
   } catch (err) {
     res.status(400).send(err);
   }
-});
+};
 
 // Delete User by ID
-router.delete('/:id', authMiddleware, async(req, res) => {
+exports.delete = async function (req, res, next) {
   var id = req.params.id;
 
   try {
-    await User.deleteOne({ _id: id })
+    await Participant.deleteMany({ participant: id })
+    await Event.deleteMany({ organizer: id })
+    await User.deleteOne({ _id: id });
 
     return res.status(200).send({ "ok" : "Usuário deletado" });
   } catch (err) {
     res.status(400).send(err);
   }
-});
-
-module.exports = app => app.use("/user", router);
+};

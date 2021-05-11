@@ -12,10 +12,8 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 
-require('./app/controllers/authController')(app);
-require('./app/controllers/eventController')(app);
-require('./app/controllers/participantController')(app);
-require('./app/controllers/userController')(app);
-
+require('./app/routes/authRoutes')(app);
+require('./app/routes/eventRoutes')(app);
+require('./app/routes/userRoutes')(app);
 
 app.listen(port, () => console.log(`Server running at http://localhost:${port}/`));

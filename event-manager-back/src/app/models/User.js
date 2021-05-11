@@ -23,6 +23,9 @@ const UserSchema = mongoose.Schema({
   college: {
     type: String,
   },
+  received: {
+    type: Number
+  },
   createdAt: {
     type: Date,
     default: Date.now

@@ -11,6 +11,10 @@ const ParticipantSchema = mongoose.Schema({
     required: true,
     ref: 'Event'
   },
+  hasPaid: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now

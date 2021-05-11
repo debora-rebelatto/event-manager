@@ -1,4 +1,3 @@
-const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 
@@ -6,15 +5,13 @@ const authConfig = require("../../config/auth.json");
 
 const User = require('../models/User');
 
-const router = express.Router();
-
-router.post('/register', async (req, res) => {
+exports.register = async function (req, res, next) {
   const { email } = req.body;
   try {
     if(await User.findOne({ email }))
       return res.status(400).send({ error: 'User already exists' });
 
-    const user = await User.create(req.body);
+    const user = await User.create({ ...req.body, received: 0 });
 
     user.password = undefined;
 
@@ -23,9 +20,9 @@ router.post('/register', async (req, res) => {
     console.log(err);
     return res.status(400).send({'error': err })
   }
-});
+};
 
-router.post('/authenticate', async (req, res) => {
+exports.authenticate = async function (req, res, next) {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email }).select('password');
@@ -39,10 +36,8 @@ router.post('/authenticate', async (req, res) => {
   user.password = undefined;
 
   res.send({ user, token: generateToken({ id: user.id })});
-});
+};
 
 function generateToken(params = {}) {
   return jwt.sign(params, authConfig.secret, { expiresIn: 86400 });
 }
-
-module.exports = app => app.use("/auth", router);
