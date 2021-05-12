@@ -15,25 +15,55 @@ router.use(authMiddleware);
 //Query filter
 exports.getPdf = async function (req, res, next) {
   try {
+    if(await Event.findById(req.params.id).countDocuments() <= 0)
+      return res.status(400).send({"err": "evento não existe"});
+
+    if(await Participant.find({ participant: req.userId, event: req.params.id, hasPaid: false}).countDocuments() != 0)
+      return res.status(400).send({"err": "evento não foi pago"});
+
     var user = await User.findById(req.userId);
+
     var event = await Event.findById(req.params.id).populate('organizer');
 
     let doc = new PDFDocument({ size: "A4", margin: 50, layout: 'landscape' });
 
     doc
+      .font('Helvetica-Bold')
+      .fontSize(30)
+      .text("Certificado de Participação", { align: 'center' })
+    doc
+      .font('Helvetica')
+      .fontSize(18)
       .text("Certifico que", { align: 'center' })
     doc
+      .font('Helvetica-Bold')
+      .fontSize(20)
       .text(`${user.name}`, { align: 'center' })
+
     doc
+    .font('Helvetica')
+
+      .fontSize(18)
       .text('Participou do evento', { align: 'center' });
+
     doc
+      .font('Helvetica-Bold')
+      .fontSize(20)
+      .text(`${event.title}`, { align: 'center' });
+
+    doc
+    .font('Helvetica')
+
+      .fontSize(18)
       .text(`ministrado por ${event.organizer.name}`, { align: 'center' });
+
     doc
+    .font('Helvetica')
+
+      .fontSize(18)
       .text(`de ${event.initialDate} até ${event.finalDate}, cumprindo carga horária total de 10 horas`,
         { align: 'center' }
       );
-    doc
-      .text(`${event.organizer.name}`, { align: 'center' });
 
     doc.end();
     doc.pipe(fs.createWriteStream(`certificado${user.name}.pdf`));
@@ -41,10 +71,10 @@ exports.getPdf = async function (req, res, next) {
     return res.status(200).json({'ok': 'ok'});
 
   } catch(err) {
-    return res.status(400).send({ 'error': err });
+
+    return res.status(400).send(err);
   }
 };
-
 
 //Query filter
 exports.filterEvents = async function (req, res, next) {
@@ -64,6 +94,7 @@ exports.filterEvents = async function (req, res, next) {
 // Creating new event
 exports.create = async function (req, res, next) {
   let { isFree, price } = req.body;
+
   try {
     var user = await User.findById(req.userId);
 
@@ -123,7 +154,9 @@ exports.deleteById = async function (req, res, next) {
     if(!await Event.findById(id))
       return res.status(400).send({ 'error': 'Evento não existe' })
 
-    await Event.deleteOne({ _id: id })
+    await Event.deleteOne({ _id: id });
+    await Participant.deleteMany({ event: id });
+
     return res.status(200).send({ "ok": "Evento deletado" });
   } catch(err) {
     return res.status(400).send({ 'error': err });
@@ -163,8 +196,8 @@ exports.editBydId = async function (req, res, next) {
 exports.subscribeParticipant = async function (req, res, next) {
   try {
 
-    // if(await Participant.find({ participant: req.userId, event: req.params.eventId }))
-    //   return res.status(400).json({"err": "Usuário já inscrito"})
+    if(await Participant.find({ participant: req.userId, event: req.params.eventId }).countDocuments() <= 0)
+      return res.status(400).json({"err": "Usuário já inscrito"})
 
     var event = await Event.findById(req.params.eventId).populate(['organizer', 'participants']);
 
@@ -184,58 +217,29 @@ exports.subscribeParticipant = async function (req, res, next) {
 
     return res.status(200).send(event);
   } catch(err) {
-    console.log(err)
     return res.status(400).send({ 'error': err });
   }
 };
 
 // Edit event by id
-exports.checkout = async function (req, res, next) {
-  var eventId = req.params.eventId;
+exports.checkout = async function (req, res) {
+  var eventId = req.params.id;
 
   try {
+    if(await Participant.find({ event: eventId, participant: req.userId }).countDocuments() <= 0)
+      return res.status(400).send({'err': 'Usuário não participa do evento'})
 
-    // var part = await Participant.find({ participant: req.userId, event: eventId });
+    if(await Participant.find({ event: eventId, participant: req.userId, hasPaid: true }).countDocuments() != 0)
+      return res.status(400).send({'err': 'Já pagou'})
 
-    // console.log(part)
+    await Participant.updateOne(
+      { participant: req.userId },
+      { $set: { hasPaid: true } },
+      { multi: false, omitUndefined: true }
+    );
 
-    // if(await Participant.find({ participant: req.userId, event: eventId }))
-    //   return res.status(400).json({'err': 'usuário não participa do evento'});
-
-    // if(!await Participant.find({ participant: req.userId, event: eventId, hasPaid: true }))
-    //   return res.status(400).json({'err': 'usuário já pagou evento'});
-
-
-
-    // var event = await Event.findById(eventId).populate('organizer');
-
-    // var participant = await Participant.findById({ participant: req.userId });
-
-    // const updateEvent = { $set: { hasPaid: true } };
-
-    // var participant = await Participant.updateOne(
-    //   { participant: req.userId },
-    //   updateEvent,
-    //   { multi: false, omitUndefined: true }
-    // );
-
-    // var organizer = event.organizer;
-
-    // var updatedp = await Participant.find({ participant: req.userId })
-    // console.log(updatedp);
-
-    // const updateDoc = {
-    //   $set: {
-    //     received: description,
-    //     title: title,
-    //     date: date,
-    //     location: location
-    //   },
-    // };
-    // await Event.updateOne({ _id: id }, updateDoc, { multi: false, omitUndefined: true });
-
-    return res.status(200).send({'ok': 'ok'});
+    return res.status(200).json({'ok': 'ok'});
   } catch(err) {
-    return res.status(400).send({ 'error': err });
+    return res.status(400).send(err);
   }
 };

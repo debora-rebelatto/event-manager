@@ -37,10 +37,6 @@ const EventSchema = mongoose.Schema({
     type: Number,
     require: true,
   },
-  isFree: {
-    type: Boolean,
-    required: true
-  },
   price: {
     type: Number,
   },

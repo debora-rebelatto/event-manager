@@ -25,7 +25,7 @@ exports.getUserInfo = async function (req, res, next) {
 // Get events user is participating
 exports.eventsPartcipating = async function (req, res, next) {
   try {
-    var event = await Participant.find({participant: req.userId});
+    var event = await Participant.find({ participant: req.userId });
     return res.status(200).send( event );
   } catch (err) {
     console.log(err)
@@ -36,7 +36,7 @@ exports.eventsPartcipating = async function (req, res, next) {
 // Get events user is organizing
 exports.eventsOrganizing = async function (req, res, next) {
   try {
-    var event = await Event.find({ organizer:req.userId });
+    var event = await Event.find({ organizer: req.userId });
     return res.status(200).send( event );
   } catch (err) {
     console.log(err)
@@ -69,6 +69,27 @@ exports.giveOrganizerPermission = async function (req, res, next) {
     res.status(400).send(err);
   }
 };
+
+// Edit user
+exports.edit = async function (req, res, next) {
+  var { name, college } = req.body;
+
+  try {
+    const updateDoc = {
+      $set: {
+        name: name,
+        college: college
+      },
+    };
+
+    await User.updateOne({ _id: req.userId }, updateDoc, { multi: false, omitUndefined: true });
+
+    return res.status(200).send({ "ok" : "Usuário atualizado" });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+
 
 // Delete User by ID
 exports.delete = async function (req, res, next) {

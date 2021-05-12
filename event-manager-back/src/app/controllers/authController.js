@@ -11,7 +11,7 @@ exports.register = async function (req, res, next) {
     if(await User.findOne({ email }))
       return res.status(400).send({ error: 'User already exists' });
 
-    const user = await User.create({ ...req.body, received: 0 });
+    const user = await User.create({ ...req.body, received: 0.0 });
 
     user.password = undefined;
 
