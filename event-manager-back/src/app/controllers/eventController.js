@@ -1,10 +1,9 @@
 const express = require("express");
-const PDFDocument = require('pdfkit');
-const fs = require('fs');
 
 const Event = require('../models/Event');
 const User = require('../models/User');
 const Participant = require('../models/Participant');
+const PdfServices = require('../services/pdfServices');
 
 const authMiddleware = require("../middleware/auth");
 
@@ -12,7 +11,6 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-//Query filter
 exports.getPdf = async function (req, res, next) {
   try {
     if(await Event.findById(req.params.id).countDocuments() <= 0)
@@ -22,61 +20,16 @@ exports.getPdf = async function (req, res, next) {
       return res.status(400).send({"err": "evento não foi pago"});
 
     var user = await User.findById(req.userId);
-
     var event = await Event.findById(req.params.id).populate('organizer');
 
-    let doc = new PDFDocument({ size: "A4", margin: 50, layout: 'landscape' });
-
-    doc
-      .font('Helvetica-Bold')
-      .fontSize(30)
-      .text("Certificado de Participação", { align: 'center' })
-    doc
-      .font('Helvetica')
-      .fontSize(18)
-      .text("Certifico que", { align: 'center' })
-    doc
-      .font('Helvetica-Bold')
-      .fontSize(20)
-      .text(`${user.name}`, { align: 'center' })
-
-    doc
-    .font('Helvetica')
-
-      .fontSize(18)
-      .text('Participou do evento', { align: 'center' });
-
-    doc
-      .font('Helvetica-Bold')
-      .fontSize(20)
-      .text(`${event.title}`, { align: 'center' });
-
-    doc
-    .font('Helvetica')
-
-      .fontSize(18)
-      .text(`ministrado por ${event.organizer.name}`, { align: 'center' });
-
-    doc
-    .font('Helvetica')
-
-      .fontSize(18)
-      .text(`de ${event.initialDate} até ${event.finalDate}, cumprindo carga horária total de 10 horas`,
-        { align: 'center' }
-      );
-
-    doc.end();
-    doc.pipe(fs.createWriteStream(`certificado${user.name}.pdf`));
+    await PdfServices.buildPdf(user, event);
 
     return res.status(200).json({'ok': 'ok'});
-
   } catch(err) {
-
     return res.status(400).send(err);
   }
 };
 
-//Query filter
 exports.filterEvents = async function (req, res, next) {
   try {
     var events = await Event.find({
@@ -91,7 +44,6 @@ exports.filterEvents = async function (req, res, next) {
   }
 };
 
-// Creating new event
 exports.create = async function (req, res, next) {
   let { isFree, price } = req.body;
 
@@ -111,7 +63,6 @@ exports.create = async function (req, res, next) {
   }
 };
 
-// Get event by id
 exports.getById = async function (req, res, next) {
   var id = req.params.id;
 
@@ -127,21 +78,17 @@ exports.getById = async function (req, res, next) {
   }
 };
 
-// List events
-exports.list = async function (req, res, next) {
+exports.list = async function (req, res) {
   try {
     var events = await Event.find().populate(['organizer', 'participants']);
-
     return res.status(200).send( events );
   } catch(err) {
     return res.status(400).send({ 'error': err });
   }
 };
 
-// Delete event by id
-exports.deleteById = async function (req, res, next) {
+exports.deleteById = async function (req, res) {
   var id = req.params.id;
-
   try {
     var event = await Event.findById(id);
 
@@ -163,11 +110,9 @@ exports.deleteById = async function (req, res, next) {
   }
 };
 
-// Edit event by id
 exports.editBydId = async function (req, res, next) {
   let id = req.params.id;
   let { title, description, date, location } = req.body;
-
   try {
     var event = await Event.findById(id);
 
@@ -221,7 +166,6 @@ exports.subscribeParticipant = async function (req, res, next) {
   }
 };
 
-// Edit event by id
 exports.checkout = async function (req, res) {
   var eventId = req.params.id;
 
