@@ -10,8 +10,7 @@
           <h5>Valor: ${{item.quantityTickets}}</h5>
           <el-button 
             class="event-button">
-              Cadastrar
-
+              Inscrever
           </el-button>
         </div>
       </el-card>
@@ -67,7 +66,7 @@ export default {
   .container {
     display: flex;
     flex-direction: row;
-    width: 1050px;
+    width: 97%;
     height: 100%;
     max-height: 280px;
     background-color: #6DF1A4;

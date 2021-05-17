@@ -34,9 +34,17 @@
             placeholder='Digite o nome do evento' 
             class="input-event"
             v-model='formEvent.title'  
-          />          
+          />        
+
+          <el-date-picker
+            v-model="startDate"
+            type="daterange"
+            range-separator="To"
+            start-placeholder="Start date"
+            end-placeholder="End date">
+          </el-date-picker>  
           
-        <generic-date  class="input-event"/> 
+        <!-- <generic-date  class="input-event"/> -->
         
         <generic-input 
           type='text'
@@ -115,8 +123,10 @@ export default {
         price: '',
         quantityTickets: '',
         state: '',
-        desctiption: ''
+        desctiption: '',
+        isfree: true
       },
+      startDate: '',
       auth: headers,
       BASE_URL: 'http://localhost:3000',
       EVENT_URL: '/event',
@@ -125,14 +135,25 @@ export default {
   },
 
   methods: {
+    event() {
+      this.formEvent.isfree = this.formEvent.price > 0 ? false : true
+      this.formEvent.initialDate = new Date(this.startDate[0]).toISOString()
+      this.formEvent.finalDate = new Date(this.startDate[1]).toISOString()
+    },
+
     saveEvent() {
+      this.event()
 
       //pra cadastrar evento e preciso que o usario tenha permissão to dandpo ela aqui porem ta dando
       //n autorizado na api
-      
+     
       axios.post(`${this.BASE_URL}${this.PARTICIPANT_URL}/${localStorage.getItem('user')}`, {
         headers: this.auth
+      }).then(res =>{
+        console.log("user", res)
       })
+
+      console.log(this.formEvent)
       
       
       axios.post(`${this.BASE_URL}${this.EVENT_URL}`, {headers: this.auth}, this.formEvent)
