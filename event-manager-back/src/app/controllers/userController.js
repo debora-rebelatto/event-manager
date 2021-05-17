@@ -62,9 +62,9 @@ exports.giveOrganizerPermission = async function (req, res, next) {
   try {
     const updateDoc = { $set: { isOrganizer: true } };
 
-    var user = await User.updateOne({ _id: id }, updateDoc, { multi: false, omitUndefined: true });
+    await User.updateOne({ _id: id }, updateDoc, { multi: false, omitUndefined: true });
 
-    return res.status(200).json(user);
+    return res.status(200).json({'ok': 'ok'});
   } catch (err) {
     res.status(400).send(err);
   }

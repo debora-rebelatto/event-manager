@@ -154,6 +154,7 @@ export default {
 </script>
 
 <style lang="css" scoped>
+
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -182,8 +183,13 @@ export default {
   width: 130px;
 }
 
-.input-two {
+.two-input {
   display: flex;
+  justify-content: space-between;
+}
+
+.parse-input {
+  width: -webkit-fill-available;
 }
 
 .dialog{
