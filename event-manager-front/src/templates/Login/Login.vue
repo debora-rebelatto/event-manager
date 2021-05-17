@@ -10,21 +10,24 @@
                 Event maneger
             </h2>
         </div>
-        <generic-input 
+        <generic-input
+            type='text' 
             placeholder="Digite seu nome"  
-            v-model="formLogin.user" 
+            v-model="formLogin.name" 
             class="input-form"
         />
 
         <generic-input 
+            type:='email'
             placeholder="Digite seu Email" 
             v-model="formLogin.email" 
             class="input-form"
         />
 
         <generic-input 
+            type='password'
             placeholder="Digite sua Senha" 
-            v-model="formLogin.senha" 
+            v-model="formLogin.password" 
             class="input-form"
         />
 
@@ -33,7 +36,7 @@
                 type="primary"
                 class="button create"
                 size="medium"
-                @click.native="logar()">
+                @click.native="registrar()">
                 Criar conta
             </el-button>
         
@@ -53,7 +56,7 @@
 <script>
 import GenericButton from '@/components/atoms/GenericButton/GenericButton.vue'
 import GenericInput from '@/components/atoms/GenericInput/GenericInput.vue'
-
+import axios from 'axios'
 
 export default {
     components: {
@@ -66,11 +69,21 @@ export default {
 
         return{
             formLogin: {
-                user: '',
+                name: '',
                 email: '',
-                senha: ''
-            }
+                password: ''
+            },
+            
+            formAuth: {
+                email: '',
+                password: ''
+            },
+
+            BASE_URL: 'http://localhost:3000',
+            REGISTER: '/auth/register',
+            AUTH: '/auth/authenticate'
         }
+
     },
 
     methods: {
@@ -82,10 +95,44 @@ export default {
                 position: "center"
             });
             
-            setTimeout(() => {
-                loginMessage.close();
-                this.$router.push("/dashboard");  
-            }, 2000)
+            axios.post(`${this.BASE_URL}${this.AUTH}`, this.formLogin)
+            .then(res => {
+                Promise.resolve(res)
+
+                if(res.data) {
+                    localStorage.setItem('user', res.data.user._id)
+                    localStorage.setItem('token', res.data.token)
+                }
+                
+                setTimeout(() => {
+                    loginMessage.close();
+                    this.$router.push("/dashboard");  
+                }, 2000)
+            })
+            .catch(err => {
+                Promise.reject(err)
+            })
+        },
+
+        registrar(){
+            let loginMessage = this.$message.loading({
+                message: 'Parabéns você está cadastrado, já pode relizar o login',
+                hasMask: true,
+                duration: '2000',
+                position: "center"
+            });
+            
+            
+            axios.post(`${this.BASE_URL}${this.REGISTER}`, this.formLogin)
+            .then(() => {
+                setTimeout(() => {
+                 loginMessage.close();
+                }, 2000)
+            })
+            .catch(err => {
+                Promise.reject(err)
+                alert('Não foi possivel realizar o cadastro')
+            })
         }
     }
 }

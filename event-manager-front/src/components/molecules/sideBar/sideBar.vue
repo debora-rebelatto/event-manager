@@ -28,40 +28,64 @@
         </el-menu-item>
       </el-menu>
 
-    <el-dialog title="Cadastrar Evento" :visible.sync="dialogTableVisible" center custom-class="dialog">
-      <div class="card-event">
-        <div class="input-two">
-          <el-input
-            placeholder="Nome do evento"
-            prefix-icon="el-icon-date"
-            v-model="name">
-          </el-input>
-          <el-input
-            placeholder="Data"
-            prefix-icon="el-icon-search"
-            v-model="date">
-          </el-input>
-        </div>
-       <el-input
-          placeholder="Instituição de ensino"
-          prefix-icon="el-icon-search"
-          v-model="school">
-        </el-input>
-        <el-input
-          placeholder="Informações adicionais"
-          prefix-icon="el-icon-search"
-          v-model="addictional">
-        </el-input>
-        <el-input
-          placeholder="Descrição do evento"
-          prefix-icon="el-icon-search"
-          v-model="describle">
-        </el-input>
-        <el-button @click="saveEvent"> Salvar </el-button>
-        <el-button @click="dialogTableVisible = false"> Cancelar </el-button>
+      <el-dialog title="Cadastrar Evento" :visible.sync="dialogTableVisible" class="dialog">
+        <div>
+          <generic-input 
+            placeholder='Digite o nome do evento' 
+            class="input-event"
+            v-model='formEvent.title'  
+          />          
+          
+        <generic-date  class="input-event"/> 
+        
+        <generic-input 
+          type='text'
+          placeholder='Digite nome da instituição' 
+          class="input-event"
+          v-model='formEvent.location'  
+        />
+        
+        <generic-input
+          type='text'
+          placeholder='Cidade' 
+          class="input-event"
+          v-model='formEvent.city'  
+        />
 
-      </div>
-    </el-dialog>
+        <generic-input
+          type='text'
+          maxlength='2' 
+          placeholder='UF' 
+          class="input-event"
+          v-model='formEvent.state'  
+        />
+
+        <generic-input 
+          type='number'
+          placeholder='Preço' 
+          class="input-event"
+          v-model='formEvent.price'  
+        />
+        
+        <generic-input 
+          type='number'
+          placeholder='Quantidade de ingressos' 
+          class="input-event"
+          v-model='formEvent.quantityTickets'  
+        />
+
+         <generic-input 
+          type='textarea'
+          placeholder='Descrição' 
+          class="input-event"
+          v-model='formEvent.desctiption'  
+        />
+        
+        </div>
+
+          <el-button type='primary' @click="saveEvent">Salvar</el-button>
+          <el-button @click="exitDialog">Cancelar</el-button>
+      </el-dialog>
   </div>
 
 </template>
@@ -69,7 +93,8 @@
 <script>
 import GenericInput from '@/components/atoms/GenericInput/GenericInput.vue'
 import GenericDate from '@/components/atoms/GenericDate/GenericDate.vue'
-
+import { headers } from '@/services/https.js'
+import axios from 'axios'
 export default {
   name: "sidebar",
 
@@ -81,17 +106,48 @@ export default {
   data () {
     return{
       dialogTableVisible: false,
-      name: "",
-      date: "",
-      school: "",
-      describle: "",
-      addictional: ""
+      formEvent: {
+        title: '',
+        city: '',
+        finalDate:'',
+        initialDate: '',
+        location: '',
+        price: '',
+        quantityTickets: '',
+        state: '',
+        desctiption: ''
+      },
+      auth: headers,
+      BASE_URL: 'http://localhost:3000',
+      EVENT_URL: '/event',
+      PARTICIPANT_URL: '/user/organizerPermission'
     }
   },
 
   methods: {
     saveEvent() {
-      console.log("salv0")
+
+      //pra cadastrar evento e preciso que o usario tenha permissão to dandpo ela aqui porem ta dando
+      //n autorizado na api
+      
+      axios.post(`${this.BASE_URL}${this.PARTICIPANT_URL}/${localStorage.getItem('user')}`, {
+        headers: this.auth
+      })
+      
+      
+      axios.post(`${this.BASE_URL}${this.EVENT_URL}`, {headers: this.auth}, this.formEvent)
+      .then(res => {
+        Promise.resolve(res)
+        console.log(res)
+      })
+      .catch(err => {
+        Promise.reject(err)
+        alert('Não foi possivel cadastrar evento')
+      })
+    },
+
+    exitDialog() {
+      this.dialogTableVisible = false
     }
   }
 };
@@ -101,8 +157,10 @@ export default {
 .sidebar {
   display: flex;
   flex-direction: column;
-  height: 578px;
+  width: 300px;
+  height: 100vh;
   text-align: center;
+  align-items: center;
   word-break: break-work;
 }
 
@@ -126,6 +184,15 @@ export default {
 
 .input-two {
   display: flex;
+}
+
+.dialog{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.input-event{
+  padding: 5px;
 }
 
 </style>
