@@ -1,7 +1,7 @@
 const URL = 'http://localhost:3000/'
 
 export const headers = {
-    'Authorization': `Bearer ${localStorage.getItem('user') ? localStorage.getItem('user').slice(1, -1) : ''}`
+    'Authorization': `Bearer ${localStorage.getItem('token')}`
 }
 
 //Cadastro e autenticação

@@ -58,14 +58,15 @@ exports.getById = async function (req, res, next) {
 // Give user permission to be organizer
 exports.giveOrganizerPermission = async function (req, res, next) {
   var id = req.params.id;
-
+  
   try {
     const updateDoc = { $set: { isOrganizer: true } };
-
-    var user = await User.updateOne({ _id: id }, updateDoc, { multi: false, omitUndefined: true });
-
-    return res.status(200).json(user);
+    
+    await User.updateOne({ _id: id }, updateDoc, { multi: false, omitUndefined: true });
+    
+    return res.status(200).json({'ok': 'ok'});
   } catch (err) {
+    console.log("passou", err)
     res.status(400).send(err);
   }
 };
