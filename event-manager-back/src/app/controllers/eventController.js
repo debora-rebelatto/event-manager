@@ -45,17 +45,9 @@ exports.filterEvents = async function (req, res, next) {
 };
 
 exports.create = async function (req, res, next) {
-  let { isFree, price } = req.body;
-
   try {
-    var user = await User.findById(req.userId);
-
-    console.log(user.isOrganizer)
-
-    if(!isFree && !price) return res.status(400).json({ "error": "Evento precisa ter preço" })
-
-    if(!user.isOrganizer) return res.status(400).send({ error: 'Usuário não autorizado' })
-
+    // var user = await User.findById(req.userId);
+    // if(!user.isOrganizer) return res.status(400).send({ error: 'Usuário não autorizado' })
     var event = await Event.create({ ...req.body, organizer: req.userId });
     return res.status(200).send(event)
   } catch(err) {
