@@ -30,35 +30,45 @@
 
     <el-dialog title="Cadastrar Evento" :visible.sync="dialogTableVisible" center custom-class="dialog">
       <div class="card-event">
-        <div class="input-two">
+        <div class="two-input">
           <el-input
             placeholder="Nome do evento"
-            prefix-icon="el-icon-date"
-            v-model="name">
+            prefix-icon="el-icon-circle-plus-outline"
+            v-model="name"
+            class="parse-input"
+            style="padding-right: 10px;">
           </el-input>
-          <el-input
-            placeholder="Data"
-            prefix-icon="el-icon-search"
-            v-model="date">
-          </el-input>
+          <el-date-picker
+            v-model="date"
+            type="daterange"
+            range-separator="a"
+            start-placeholder="Início"
+            class="parse-input"
+            end-placeholder="Término">
+          </el-date-picker>
         </div>
        <el-input
           placeholder="Instituição de ensino"
-          prefix-icon="el-icon-search"
-          v-model="school">
+          prefix-icon="el-icon-school"
+          v-model="school"
+          style="margin-top: 10px">
         </el-input>
         <el-input
           placeholder="Informações adicionais"
-          prefix-icon="el-icon-search"
-          v-model="addictional">
+          prefix-icon="el-icon-circle-plus-outline"
+          v-model="addictional"
+          style="margin-top: 10px">
         </el-input>
         <el-input
           placeholder="Descrição do evento"
-          prefix-icon="el-icon-search"
-          v-model="describle">
+          v-model="describle"
+          style="margin-top: 10px; padding-bottom: 10px"
+          type="textarea">
         </el-input>
-        <el-button @click="saveEvent"> Salvar </el-button>
-        <el-button @click="dialogTableVisible = false"> Cancelar </el-button>
+        <div class="two-input">
+          <el-button @click="saveEvent" type="success" class="parse-input"> Salvar </el-button>
+          <el-button @click="dialogTableVisible = false" type="danger" class="parse-input"> Cancelar </el-button>
+        </div>
 
       </div>
     </el-dialog>
@@ -98,6 +108,7 @@ export default {
 </script>
 
 <style lang="css" scoped>
+
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -124,8 +135,13 @@ export default {
   width: 130px;
 }
 
-.input-two {
+.two-input {
   display: flex;
+  justify-content: space-between;
+}
+
+.parse-input {
+  width: -webkit-fill-available;
 }
 
 </style>
