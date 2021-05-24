@@ -117,8 +117,6 @@ export default {
       formEvent: {
         title: '',
         city: '',
-        finalDate:'',
-        initialDate: '',
         location: '',
         price: '',
         quantityTickets: '',
@@ -137,8 +135,8 @@ export default {
   methods: {
     event() {
       this.formEvent.isfree = this.formEvent.price > 0 ? false : true
-      this.formEvent.initialDate = new Date(this.startDate[0]).toISOString()
-      this.formEvent.finalDate = new Date(this.startDate[1]).toISOString()
+      //this.formEvent.initialDate = new Date(this.startDate[0]).toISOString()
+      //this.formEvent.finalDate = new Date(this.startDate[1]).toISOString()
     },
 
     saveEvent() {
